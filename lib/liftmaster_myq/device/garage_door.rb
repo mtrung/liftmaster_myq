@@ -32,7 +32,7 @@ module LiftmasterMyq::Device
       elsif state == '8'
         return "moving"
       elsif state == '9'
-        return "moving"
+        return "open"
       else
         return "#{state} is an unknown state for the door."
       end
