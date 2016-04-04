@@ -23,10 +23,12 @@ class Gdo
   # Create the object
   def initialize()
       @system = LiftmasterMyq::System.new('xxx@gmail.com','xxx')
+      puts "LiftmasterMyq ver #{LiftmasterMyq::VERSION}"
+      puts " "
       printList(".gateways", @system.gateways)
       printList(".garage_doors", @system.garage_doors)
-      printList(".lights", @system.lights)
-      puts "\n"
+    #   printList(".lights", @system.lights)
+      puts " "
   end
 
   def getDoorStatus()
