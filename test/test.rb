@@ -32,25 +32,25 @@ class Gdo
   end
 
   def getDoorStatus(door)
-    #   puts "door status: #{door.status}"
-
-    isStoppedState = (door.status == 'closed' or door.status == 'open') ? true : false
+    # must use local var currState since door.status can be changed anytime
+    currState = door.status
+    isStoppedState = (currState == 'closed' or currState == 'open')
 
     if @lastDoorStatus.nil?
-        print "   " + door.status
-    elsif door.status == @lastDoorStatus
+        print "   " + currState
+    elsif currState == @lastDoorStatus
         print "."
     else
         if isStoppedState == true
             puts "]"
-            puts "   " + door.status + " :)"
+            puts "   " + currState + " :]"
         else
             puts "]"
-            print "   [" + door.status
+            print "   [" + currState
         end
     end
 
-    @lastDoorStatus = door.status
+    @lastDoorStatus = currState
     return isStoppedState
   end
 
@@ -60,6 +60,7 @@ class Gdo
             while getDoorStatus(door) == false
                 sleep 1
             end
+            puts " :-)"
         end
     end
   end
