@@ -31,16 +31,45 @@ class Gdo
       puts " "
   end
 
-  def getDoorStatus()
+  def getDoorStatus(door)
+    #   puts "door status: #{door.status}"
+
+    isStoppedState = (door.status == 'closed' or door.status == 'open') ? true : false
+
+    if @lastDoorStatus.nil?
+        print "   " + door.status
+    elsif door.status == @lastDoorStatus
+        print "."
+    else
+        if isStoppedState == true
+            puts "]"
+            puts "   " + door.status + " :)"
+        else
+            puts "]"
+            print "   [" + door.status
+        end
+    end
+
+    @lastDoorStatus = door.status
+    return isStoppedState
+  end
+
+  def getDoorsStatus()
     if @system.garage_doors.respond_to?("each")
         @system.garage_doors.each do |door|
-            puts "door status: #{door.status}"
+            while getDoorStatus(door) == false
+                sleep 1
+            end
         end
     end
   end
 
+  def getDefaultDoor()
+      return @system.garage_doors[0]
+  end
+
   def toggle()
-    door = @system.garage_doors[0]
+    door = getDefaultDoor
     statusStr = "   " + door.status
     if door.status == 'closed'
         statusStr += " => open"
@@ -61,10 +90,20 @@ if __FILE__ == $0
   gdo = Gdo.new
   param1 = ARGV[0]
 
+  $stdout.sync = true
+
   if param1.nil?
-      gdo.getDoorStatus
+      gdo.getDoorsStatus
       exit
   end
 
   gdo.toggle
+
+  # wait until status changes
+  door = gdo.getDefaultDoor
+  while gdo.getDoorStatus(door) == true
+      sleep 1
+  end
+
+  gdo.getDoorsStatus
 end
